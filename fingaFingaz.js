@@ -6,10 +6,13 @@
 var fingaFingaz = (function() {
 	
 	var FF = this,
+		w = window,
 		d = document,
+		$ = window.jQuery,
 		supportsTouch = !!('ontouchstart' in window) || !!('onmsgesturechange' in window),
 		init, touchStarter, touchMover, touchEnder, getZoom, gestureStarter, gestureEnder,
-		swipeUp, swipeUpHandler, swipeRight, swipeRightHandler, swipeDown, swipeDownHandler, swipeLeft, swipeLeftHandler;
+		swipeup, swiperight, swipedown, swipeleft,
+		swipeUpHandler, swipeRightHandler, swipeDownHandler, swipeLeftHandler;
 
 	FF.start = {x : 0, y : 0};
 	FF.prevPos = {x : 0, y : 0};
@@ -35,6 +38,13 @@ var fingaFingaz = (function() {
 		return { x : e.pageX !== undefined ? e.pageX : e.originalEvent.pageX, y : e.pageY !== undefined ? e.pageY : e.originalEvent.pageY };
 		
 	}; //
+	this.trigger = function(e, ev) {
+		
+		d.dispatchEvent(ev);
+		if($ !== undefined)
+			$(e.target).trigger(ev.type);
+		
+	}; //
 
 	init = function() {
 			
@@ -48,28 +58,18 @@ var fingaFingaz = (function() {
 		d.addEventListener('gestureend', gestureEnder, false);
 		
 		// swipes ...
-		swipeUp = new Event('swipeUp');
-		swipeRight = new Event('swipeRight');
-		swipeDown = new Event('swipeDown'); 
-		swipeLeft = new Event('swipeLeft');
-		d.addEventListener('swipeUp', swipeUpHandler, false);
-		d.addEventListener('swipeRight', swipeRightHandler, false);
-		d.addEventListener('swipeDown', swipeDownHandler, false);
-		d.addEventListener('swipeLeft', swipeLeftHandler, false);
+		swipeup = new Event('swipeup');
+		swiperight = new Event('swiperight');
+		swipedown = new Event('swipedown'); 
+		swipeleft = new Event('swipeleft');
+		d.addEventListener('swipeup', swipeUpHandler, false);
+		d.addEventListener('swiperight', swipeRightHandler, false);
+		d.addEventListener('swipedown', swipeDownHandler, false);
+		d.addEventListener('swipeleft', swipeLeftHandler, false);
 		
 		// add to jq
-		if(window.jQuery !== undefined) {
-			jQuery.event.props.push('touchstart');
-			jQuery.event.props.push('touchmove');
-			jQuery.event.props.push('touchend');
-			jQuery.event.props.push('gesturestart');
-			jQuery.event.props.push('gestureend');
-			jQuery.event.props.push('swipe');
-			jQuery.event.props.push('swipeUp');
-			jQuery.event.props.push('swipeRight');
-			jQuery.event.props.push('swipeDown');
-			jQuery.event.props.push('swipeLeft');
-		}
+		if($ !== undefined)
+			$.event.props.push(['touchstart', 'touchmove', 'touchend', 'gesturestart', 'gestureend', 'swipeup', 'swiperight', 'swipedown', 'swipeleft']);
 			
 	};
 	//
@@ -95,7 +95,6 @@ var fingaFingaz = (function() {
 
 		FF.pos.y = c.y;	
 		FF.pos.x = c.x;
-
 		FF.step.y = FF.prevPos.y - FF.pos.y;
 		FF.step.x = FF.prevPos.x - FF.pos.x;
 		FF.prevPos.y = FF.pos.y * 1;
@@ -125,19 +124,20 @@ var fingaFingaz = (function() {
 			// swipe
 			if(Math.abs(FF.dist.x) > FF.threshold) {
 				FF.swipeH = FF.dist.x > 0 ? 'left' : 'right';
-				if(FF.swipeH == 'left')
-					d.dispatchEvent(swipeLeft);
+				if(FF.swipeH == 'left') {
+					FF.trigger(e, swipeleft);
+				}
 				if(FF.swipeH == 'right')
-					d.dispatchEvent(swipeRight);
+					FF.trigger(e, swiperight);
 			} else {
 				FF.swipeH = false;
 			}
 			if(Math.abs(FF.dist.y) > FF.threshold) {
 				FF.swipeV = FF.dist.y > 0 ? 'up' : 'down';
 				if(FF.swipeV == 'up')
-					d.dispatchEvent(swipeUp);
+					FF.trigger(e, swipeup);
 				if(FF.swipeV == 'down')
-					d.dispatchEvent(swipeDown);
+					FF.trigger(e, swipedown);
 			} else {
 				FF.swipeV = false;
 			}
