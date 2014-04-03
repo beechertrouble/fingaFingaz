@@ -2,6 +2,7 @@ fingaFingaz
 ===========
 
 Touch Finga-Fingaz adds some event listeners and custom events and whatnot to browsers that support touch.
+minified is 3kb
 
 
 Usage
@@ -14,7 +15,6 @@ Usage
 	- touchend
 	- gesturestart
 	- gestureend
-	- swipe
 	- swipeUp
 	- swipeRight
 	- swipeDown
