@@ -8,16 +8,17 @@ minified is 3kb
 Usage
 ===========
 - add the js
-- access via global fingaFingaz
+- init like so : <code>var _FF = fingaFingaz();</code>
 - enjoy the new events :
+	- swipeup
+	- swiperight
+	- swipedown
+	- swipeleft
+- also : 
 	- touchstart
 	- touchmove
 	- touchend
 	- gesturestart
 	- gestureend
-	- swipeUp
-	- swipeRight
-	- swipeDown
-	- swipeLeft
-- the above events are auto registered with jQuery so you can do like :
-	<code>$("#thing").on("swipeLeft", function(){ console.log('swiped left'); });</code>
+- all above events are auto registered with jQuery so you can do like :
+	<code>$("#thing").on("swipeleft", function(){ console.log('swiped left'); });</code>

@@ -6,7 +6,6 @@
 var fingaFingaz = (function() {
 	
 	var FF = this,
-		w = window,
 		d = document,
 		$ = window.jQuery,
 		supportsTouch = !!('ontouchstart' in window) || !!('onmsgesturechange' in window),
@@ -45,7 +44,6 @@ var fingaFingaz = (function() {
 			$(e.target).trigger(ev.type);
 		
 	}; //
-
 	init = function() {
 			
 		if(!supportsTouch || !document.addEventListener) return;
@@ -70,6 +68,8 @@ var fingaFingaz = (function() {
 		// add to jq
 		if($ !== undefined)
 			$.event.props.push(['touchstart', 'touchmove', 'touchend', 'gesturestart', 'gestureend', 'swipeup', 'swiperight', 'swipedown', 'swipeleft']);
+			
+		return FF;
 			
 	};
 	//
@@ -172,8 +172,6 @@ var fingaFingaz = (function() {
 		//console.log('swipeLeft');
 	} //
 	
-	// do it ...
 	init();
-	return this;
-
-})();
+	
+});
