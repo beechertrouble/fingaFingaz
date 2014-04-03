@@ -28,7 +28,6 @@ var fingaFingaz = (function() {
 	FF.swipeH = false; // false, left, right
 	FF.swipeV = false; // false, up, down
 	FF.scollTimer = undefined;
-
 	
 	this.getCoords = function(e) {
 
