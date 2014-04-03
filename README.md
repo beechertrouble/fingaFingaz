@@ -8,7 +8,7 @@ minified is 3kb
 Usage
 ===========
 - add the js
-- init like so : <code>var _FF = fingaFingaz();</code>
+- init like so : <code>var _FF = fingaFingaz.init();</code>
 - enjoy the new events :
 	- swipeup
 	- swiperight

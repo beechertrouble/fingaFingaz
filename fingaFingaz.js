@@ -3,7 +3,7 @@
 * adding basic touch jams
 * props to sprky0 for his hand in the codes
 */
-var fingaFingaz = (function() {
+var fingaFingaz = new function() {
 	
 	var FF = this,
 		d = document,
@@ -44,7 +44,7 @@ var fingaFingaz = (function() {
 			$(e.target).trigger(ev.type);
 		
 	}; //
-	init = function() {
+	this.init = function() {
 			
 		if(!supportsTouch || !document.addEventListener) return;
 		
@@ -171,7 +171,5 @@ var fingaFingaz = (function() {
 	swipeLeftHandler = function(e) {
 		//console.log('swipeLeft');
 	} //
-	
-	init();
-	
-});
+		
+};
