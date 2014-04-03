@@ -29,6 +29,13 @@ var fingaFingaz = (function() {
 	FF.swipeV = false; // false, up, down
 	FF.scollTimer = undefined;
 
+	
+	this.getCoords = function(e) {
+
+		return { x : e.pageX !== undefined ? e.pageX : e.originalEvent.pageX, y : e.pageY !== undefined ? e.pageY : e.originalEvent.pageY };
+		
+	}; //
+
 	init = function() {
 			
 		if(!supportsTouch || !document.addEventListener) return;
@@ -70,25 +77,26 @@ var fingaFingaz = (function() {
 	//
 	touchStarter = function(e) {
 		
-		//e.preventDefault();	
+		var coords = FF.getCoords(e);
+		
 		FF.fingers = 1;
-		FF.start.y = e.pageY;
-		FF.start.x = e.pageX;
+		FF.start.y = coords.y;
+		FF.start.x = coords.x;
 		FF.prevPos.y = FF.start.y * 1;	
 		FF.prevPos.x = FF.start.x * 1;	
 		FF.pos.y = FF.start.y * 1;	
 		FF.pos.x = FF.start.x * 1;	
 		FF.startTime = new Date().getTime();
-		FF.targetClass = e.target.className;
-		
+						
 	} //
 	touchMover = function(e) {
+		
+		var coords = FF.getCoords(e);
+		
+		if(coords.y === undefined) return true;		
 
-		// if(FF.fingers < 2 && getZoom() <= 1) e.preventDefault();
-		if(e.pageY === undefined) return true;		
-
-		FF.pos.y = e.pageY;	
-		FF.pos.x = e.pageX;
+		FF.pos.y = coords.y;	
+		FF.pos.x = coords.x;
 
 		FF.step.y = FF.prevPos.y - FF.pos.y;
 		FF.step.x = FF.prevPos.x - FF.pos.x;
