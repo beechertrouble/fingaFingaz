@@ -3,15 +3,16 @@
 * adding basic touch jams
 * props to sprky0 for his hand in the codes
 */
+
 var fingaFingaz = new function() {
 	
 	var FF = this,
 		d = document,
-		$ = window.jQuery,
+		polyfilled = !document.implementation.hasFeature("CustomEvent","4.0"),
 		supportsTouch = !!('ontouchstart' in window) || !!('onmsgesturechange' in window),
 		init, touchStarter, touchMover, touchEnder, getZoom, gestureStarter, gestureEnder,
 		swipeup, swiperight, swipedown, swipeleft,
-		swipeUpHandler, swipeRightHandler, swipeDownHandler, swipeLeftHandler;
+		swipeUpHandler, swipeRightHandler, swipeDownHandler, swipeLeftHandler, polyfill;
 
 	FF.start = {x : 0, y : 0};
 	FF.prevPos = {x : 0, y : 0};
@@ -38,16 +39,18 @@ var fingaFingaz = new function() {
 		
 	}; //
 	this.trigger = function(e, ev) {
-		
+			
 		d.dispatchEvent(ev);
 		if($ !== undefined)
 			$(e.target).trigger(ev.type);
-		
+					
 	}; //
-	this.init = function() {
+	this.init = function($) {
 			
 		if(!supportsTouch || !document.addEventListener) return;
 		
+		$('body').append('supportsTouch<br/>');
+				
 		// add listeners and custom events ...
 		d.addEventListener("touchstart", touchStarter, false);
 		d.addEventListener("touchmove", touchMover, false);
@@ -55,25 +58,41 @@ var fingaFingaz = new function() {
 		d.addEventListener('gesturestart', gestureStarter, false);
 		d.addEventListener('gestureend', gestureEnder, false);
 		
+		if(window.navigator.msPointerEnabled) {
+			
+			d.addEventListener("MSPointerDown", touchStarter, false);
+			d.addEventListener("MSPointerMove", touchMover, false);
+			d.addEventListener("MSPointerUp", touchEnder, false);
+			
+			$('body').append('point events<br/>');
+			
+		}
+		
 		// swipes ...
-		swipeup = new Event('swipeup');
-		swiperight = new Event('swiperight');
-		swipedown = new Event('swipedown'); 
-		swipeleft = new Event('swipeleft');
+		if(polyfilled)
+			polyfill();
+		
+		swipeup = new CustomEvent('swipeup');
+		swiperight = new CustomEvent('swiperight');
+		swipedown = new CustomEvent('swipedown'); 
+		swipeleft = new CustomEvent('swipeleft');
 		d.addEventListener('swipeup', swipeUpHandler, false);
 		d.addEventListener('swiperight', swipeRightHandler, false);
 		d.addEventListener('swipedown', swipeDownHandler, false);
 		d.addEventListener('swipeleft', swipeLeftHandler, false);
 		
 		// add to jq
+		$ = $ !== undefined ? $ : window.jQuery;
 		if($ !== undefined)
 			$.event.props.push(['touchstart', 'touchmove', 'touchend', 'gesturestart', 'gestureend', 'swipeup', 'swiperight', 'swipedown', 'swipeleft']);
-			
+					
 		return FF;
 			
 	};
 	//
 	touchStarter = function(e) {
+		
+		if(polyfilled && e.pointerType != 'touch') return;
 		
 		var c = FF.getCoords(e);
 		
@@ -85,9 +104,11 @@ var fingaFingaz = new function() {
 		FF.pos.y = FF.start.y * 1;	
 		FF.pos.x = FF.start.x * 1;	
 		FF.startTime = new Date().getTime();
-						
+								
 	} //
 	touchMover = function(e) {
+				
+		if(polyfilled && e.pointerType != 'touch') return;
 		
 		var c = FF.getCoords(e);
 		
@@ -99,9 +120,11 @@ var fingaFingaz = new function() {
 		FF.step.x = FF.prevPos.x - FF.pos.x;
 		FF.prevPos.y = FF.pos.y * 1;
 		FF.prevPos.x = FF.pos.x * 1;
-
+		
 	} //
 	touchEnder = function(e) {
+		
+		if(polyfilled && e.pointerType != 'touch') return;
 		
 		FF.endTime = new Date().getTime();
 		FF.duration = FF.endTime - FF.startTime;
@@ -148,7 +171,7 @@ var fingaFingaz = new function() {
 		FF.pos.y = 0;
 		FF.pos.x = 0;
 		*/
-		
+				
 	} //
 	getZoom = function() { 
 		return window.outerWidth / window.innerWidth; 
@@ -171,5 +194,20 @@ var fingaFingaz = new function() {
 	swipeLeftHandler = function(e) {
 		//console.log('swipeLeft');
 	} //
+	polyfill = function() {
+		
+		(function () {
+			function CustomEvent( event, params ) {
+				params = params || { bubbles: true, cancelable: false, detail: undefined };
+				var evt = document.createEvent( 'CustomEvent' );
+				evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
+				return evt;
+			};
+			
+			CustomEvent.prototype = window.Event.prototype;
+			window.CustomEvent = CustomEvent;
+		})();
+				
+	}
 		
 };

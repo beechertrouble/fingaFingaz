@@ -22,3 +22,6 @@ Usage
 	- gestureend
 - all above events are auto registered with jQuery so you can do like :
 	<code>$("#thing").on("swipeleft", function(){ console.log('swiped left'); });</code>
+
+- note: for ie9 & 10 you'll have to add the css property of <code>-ms-touch-action</code> to things.
+	- none || auto || pan-x || pan-y ...
