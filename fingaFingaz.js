@@ -13,42 +13,43 @@
 	if (W.fingaFingaz)
 		return;
 	
+	$ = $;
+	
 	var fingaFingaz = (function() {
 	
-		var FF = {},
+		var FF = {
+				start : {x : 0, y : 0},
+				prevPos : {x : 0, y : 0},
+				pos : {x : 0, y : 0},
+				step : {x : 0, y : 0},
+				dist : {x : 0, y : 0},
+				startTime : 0,
+				endTime : 0,
+				duration : 0,
+				firstTouch : true,
+				threshold : 75, // tap vs swipe/drag
+				speed : 0,
+				fingers : 1,
+				tap : false,
+				swipe : false,
+				swipeH : false, // false, left, right
+				swipeV : false, // false, up, down
+				scollTimer : undefined
+			},
 			D = document,
-			polyfilled = !D.implementation.hasFeature("CustomEvent","4.0"),
 			supportsTouch = !!('ontouchstart' in W) || !!('onmsgesturechange' in W),
+			polyfilled = ('msPointerEnabled' in W.navigator) && !D.implementation.hasFeature("Event","4.0"),
 			init, touchStarter, touchMover, touchEnder, getZoom, gestureStarter, gestureEnder,
 			swipeup, swiperight, swipedown, swipeleft,
 			swipeUpHandler, swipeRightHandler, swipeDownHandler, swipeLeftHandler, polyfill;
-	
-		FF.start = {x : 0, y : 0};
-		FF.prevPos = {x : 0, y : 0};
-		FF.pos = {x : 0, y : 0};
-		FF.step = {x : 0, y : 0};
-		FF.dist = {x : 0, y : 0};
-		FF.speed = {x : 0, y : 0};
-		FF.startTime = 0;
-		FF.endTime = 0;
-		FF.duration = 0;
-		FF.firstTouch = true;
-		FF.threshold = 75; // tap vs swipe/drag
-		FF.speed = 0;
-		FF.fingers = 1;
-		FF.tap = false;
-		FF.swipe = false;
-		FF.swipeH = false; // false, left, right
-		FF.swipeV = false; // false, up, down
-		FF.scollTimer = undefined;
-		
+				
 		FF.getCoords = function(e) {
 	
 			return { x : e.pageX !== undefined ? e.pageX : e.originalEvent.pageX, y : e.pageY !== undefined ? e.pageY : e.originalEvent.pageY };
 			
 		}; //
 		FF.trigger = function(e, ev) {
-				
+
 			D.dispatchEvent(ev);
 			if($ !== undefined)
 				$(e.target).trigger(ev.type);
@@ -56,7 +57,7 @@
 		}; //
 		FF.init = function($) {
 				
-			if(!supportsTouch || !document.addEventListener) return;
+			if(!supportsTouch || !D.addEventListener) return;
 							
 			// add listeners and custom events ...
 			D.addEventListener("touchstart", touchStarter, false);
@@ -128,7 +129,7 @@
 			
 		} //
 		touchEnder = function(e) {
-			
+						
 			if(polyfilled && e.pointerType != 'touch') return;
 			
 			FF.endTime = new Date().getTime();
@@ -148,7 +149,7 @@
 				// swipe / tap
 				FF.tap = Math.abs(FF.dist.x) > FF.threshold && Math.abs(FF.dist.y) > FF.threshold ? true : false;
 				FF.swipe = FF.tap ? false : true;
-				
+								
 				// swipe
 				if(Math.abs(FF.dist.x) > FF.threshold) {
 					FF.swipeH = FF.dist.x > 0 ? 'left' : 'right';
@@ -209,8 +210,8 @@
 					return evt;
 				};
 				
-				CustomEvent.prototype = window.Event.prototype;
-				window.CustomEvent = CustomEvent;
+				CustomEvent.prototype = W.Event.prototype;
+				W.CustomEvent = CustomEvent;
 			})();
 					
 		}
