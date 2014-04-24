@@ -9,6 +9,7 @@ Usage
 ===========
 - add the js
 - init like so : <code>var _FF = fingaFingaz.init();</code>
+- or - for AMD, we're defined as 'fingaFingaz'
 - enjoy the new events :
 	- swipeup
 	- swiperight
@@ -24,4 +25,4 @@ Usage
 	<code>$("#thing").on("swipeleft", function(){ console.log('swiped left'); });</code>
 
 - note: for ie9 & 10 you'll have to add the css property of <code>-ms-touch-action</code> to things.
-	- none || auto || pan-x || pan-y ...
+	- <code>none || auto || pan-x || pan-y ...</code>
