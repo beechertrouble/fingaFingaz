@@ -18,6 +18,7 @@
 	var fingaFingaz = (function() {
 	
 		var FF = {
+				inited : false,
 				start : {x : 0, y : 0},
 				prevPos : {x : 0, y : 0},
 				pos : {x : 0, y : 0},
@@ -56,6 +57,9 @@
 						
 		}; //
 		FF.init = function($) {
+			
+			if(FF.inited) return;
+			FF.inited = true;
 				
 			if(!supportsTouch || !D.addEventListener) return;
 							
