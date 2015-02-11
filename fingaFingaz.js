@@ -42,11 +42,24 @@
 			polyfilled = ('msPointerEnabled' in W.navigator) && !D.implementation.hasFeature("Event","4.0"),
 			init, touchStarter, touchMover, touchEnder, getZoom, gestureStarter, gestureEnder,
 			swipeup, swiperight, swipedown, swipeleft,
-			swipeUpHandler, swipeRightHandler, swipeDownHandler, swipeLeftHandler, polyfill;
+			swipeUpHandler, swipeRightHandler, swipeDownHandler, swipeLeftHandler, polyfill,
+			useTouch = e.originalEvent.changedTouches !== undefined && e.originalEvent.changedTouches[0] !== undefined && e.originalEvent.changedTouches[0].clientX !== undefined ? true : false;
 
 		FF.getCoords = function(e) {
-
-			return { x : e.pageX !== undefined ? e.pageX : e.originalEvent.pageX, y : e.pageY !== undefined ? e.pageY : e.originalEvent.pageY };
+			
+			var coords = {
+				x : useTouch ? e.originalEvent.changedTouches[0].clientX : e.originalEvent.pageX,
+				y : useTouch ? e.originalEvent.changedTouches[0].clientY : e.originalEvent.pageY
+			};
+				
+			if(coords.x === undefined) {
+				coords.x = e.pageX;
+				coords.y = e.pageY;
+			}
+			
+			e.fingaFingaz = coords;
+			
+			return coords;
 
 		}; //
 		FF.trigger = function(e, ev) {
@@ -58,7 +71,7 @@
 		}; //
 		FF.init = function($) {
 
-			if(FF.inited) return;
+			if(FF.inited) return FF;
 			FF.inited = true;
 
 			if(!supportsTouch || !D.addEventListener) return;
@@ -91,7 +104,7 @@
 			D.addEventListener('swipedown', swipeDownHandler, false);
 			D.addEventListener('swipeleft', swipeLeftHandler, false);
 
-			// add to jq
+			// add to jquery
 			$ = $ !== undefined ? $ : W.jQuery;
 			if($ !== undefined)
 				$.event.props.push(['touchstart', 'touchmove', 'touchend', 'gesturestart', 'gestureend', 'swipeup', 'swiperight', 'swipedown', 'swipeleft']);
@@ -113,6 +126,8 @@
 			FF.pos.y = FF.start.y * 1;
 			FF.pos.x = FF.start.x * 1;
 			FF.startTime = new Date().getTime();
+			
+			return e;
 
 		}; //
 		touchMover = function(e) {
@@ -129,6 +144,8 @@
 			FF.step.x = FF.prevPos.x - FF.pos.x;
 			FF.prevPos.y = FF.pos.y * 1;
 			FF.prevPos.x = FF.pos.x * 1;
+			
+			return e;
 
 		}; //
 		touchEnder = function(e) {
@@ -180,7 +197,9 @@
 			FF.pos.y = 0;
 			FF.pos.x = 0;
 			*/
-
+			
+			return e;
+			
 		}; //
 		getZoom = function() {
 			return W.outerWidth / W.innerWidth;
@@ -221,7 +240,7 @@
 
 		}; //
 
-		return FF;
+		return FF.init();
 
 	})();
 
