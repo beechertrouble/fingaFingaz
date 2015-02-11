@@ -8,9 +8,11 @@
 	],
 	"ignore": [
 		"node_modules",
-		"Gruntfile.js",
+		"gruntfile.js",
 		"package.json",
-		".project"
+		".project",
+		".git",
+		".gitignore"
 	],
 	"main": "fingaFingaz.min.js",
 	"license": "MIT",

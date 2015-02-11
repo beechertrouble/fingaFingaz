@@ -98,8 +98,7 @@
 
 			return FF;
 
-		};
-		//
+		}; //
 		touchStarter = function(e) {
 
 			if(polyfilled && e.pointerType != 'touch') return;
@@ -115,7 +114,7 @@
 			FF.pos.x = FF.start.x * 1;
 			FF.startTime = new Date().getTime();
 
-		} //
+		}; //
 		touchMover = function(e) {
 
 			if(polyfilled && e.pointerType != 'touch') return;
@@ -131,7 +130,7 @@
 			FF.prevPos.y = FF.pos.y * 1;
 			FF.prevPos.x = FF.pos.x * 1;
 
-		} //
+		}; //
 		touchEnder = function(e) {
 
 			if(polyfilled && e.pointerType != 'touch') return;
@@ -182,43 +181,45 @@
 			FF.pos.x = 0;
 			*/
 
-		} //
+		}; //
 		getZoom = function() {
 			return W.outerWidth / W.innerWidth;
-		} //
+		}; //
 		gestureStarter = function(e) {
 			FF.fingers = 2;
-		} //
+		}; //
 		gestureEnder = function(e) {
 			FF.fingers = 2;
-		} //
+		}; //
 		swipeUpHandler = function(e) {
 			//console.log('swipeUp');
-		} //
+		}; //
 		swipeRightHandler = function(e) {
 			//console.log('swipeRight');
-		} //
+		}; //
 		swipeDownHandler = function(e) {
 			//console.log('swipeDown');
-		} //
+		}; //
 		swipeLeftHandler = function(e) {
 			//console.log('swipeLeft');
-		} //
+		}; //
 		polyfill = function() {
 
 			(function () {
+			
 				function CustomEvent( event, params ) {
 					params = params || { bubbles: true, cancelable: false, detail: undefined };
 					var evt = document.createEvent( 'CustomEvent' );
 					evt.initCustomEvent( event, params.bubbles, params.cancelable, params.detail );
 					return evt;
-				};
+				} //
 
 				CustomEvent.prototype = W.Event.prototype;
 				W.CustomEvent = CustomEvent;
+				
 			})();
 
-		}
+		}; //
 
 		return FF;
 
