@@ -46,7 +46,24 @@
 				
 		FF.getCoords = function(e) {
 	
-			return { x : e.pageX !== undefined ? e.pageX : e.originalEvent.pageX, y : e.pageY !== undefined ? e.pageY : e.originalEvent.pageY };
+			switch(true) {
+				
+				case(e.pageX !== undefined):
+					return  { x : e.pageX, y : e.pageY };
+				
+				case(e.originalEvent !== undefined && e.originalEvent.pageX !== undefined):
+					return  { x : e.originalEvent.pageX, y : e.originalEvent.pageY };
+				
+				case(e.touches !== undefined && e.touches[0] !== undefined):
+					return  { x : e.touches[0].pageX, y : e.touches[0].pageY };
+					
+				case(e.originalEvent !== undefined && e.originalEvent.touches !== undefined):
+					return  { x : e.originalEvent.touches[0].pageX, y : e.originalEvent.touches[0].pageY };
+					
+				default:
+					return {x : 0, y : 0};
+				
+			}
 			
 		}; //
 		FF.trigger = function(e, ev) {
